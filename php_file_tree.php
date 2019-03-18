@@ -15,15 +15,16 @@
 		For documentation and updates, visit http://abeautifulsite.net/notebook.php?article=21
 		
 */
+global $listFolder ;
 
 
 function php_file_tree($directory, $return_link, $withFile=false,$extensions = array()) {
 	// Generates a valid XHTML list of all directories, sub-directories, and files in $directory
 	// Remove trailing slash
 	$code = "<ul class='php-file-tree'>";
-	$code .= "<li class=\"pft-directory\">";
+	$code .= "<li class=\"pft-directory\" >";
 	$code .= "<input data-type='dir' type='checkbox' class='targetSearch' data-url='.'>";
-	$code .= "<div class='iconDirectory'></div><a href=\"#\">Semua</a>";
+	$code .= "<div class='iconDirectory'></div><label id='directoryUtama' href=\"#\">Semua</label>";
 	if( substr($directory, -1) == "/" ) $directory = substr($directory, 0, strlen($directory) - 1);
 	$code .= php_file_tree_dir($directory, $return_link,$withFile, $extensions);
 	$code .= "</li>";
@@ -70,7 +71,7 @@ function php_file_tree_dir($directory, $return_link, $withFile=true,$extensions 
 					// Directory
 					$php_file_tree .= "<li class=\"pft-directory\">";
 					$php_file_tree .= "<input data-type='dir' type='checkbox' class='targetSearch' data-url='".$directory."/".$this_file."'>";
-					$php_file_tree .= "<div class='iconDirectory'></div><a href=\"#\">" . htmlspecialchars($this_file) . "</a>";
+					$php_file_tree .= "<div class='iconDirectory'></div><label href=\"#\">" . htmlspecialchars($this_file) . "</label>";
 					$php_file_tree .= php_file_tree_dir("$directory/$this_file", $return_link ,$withFile,$extensions, false);
 					$php_file_tree .= "</li>";
 				} else {
@@ -81,7 +82,8 @@ function php_file_tree_dir($directory, $return_link, $withFile=true,$extensions 
 						if($withFile){
 							$ext = "ext-" . substr($this_file, strrpos($this_file, ".") + 1); 
 							$link = str_replace("[link]", "$directory/" . urlencode($this_file), $return_link);
-							$php_file_tree .= "<li class=\"pft-file " . strtolower($ext) . "\"><input type='checkbox' data-type='file' class='targetSearch' data-url='".$directory."/".$this_file."'><div class='iconFile pft-file " . strtolower($ext) . "'></div><a href=\"$link\">" . htmlspecialchars($this_file) . "</a></li>";
+							$link = str_replace("\\", '/', $link);
+							$php_file_tree .= "<li class=\"pft-file " . strtolower($ext) . "\"><input type='checkbox' data-type='file' class='targetSearch' data-url='".$directory."/".$this_file."'><div class='iconFile pft-file " . strtolower($ext) . "'></div><label class=\"openTextEditor\" data-text=\"$link\" style='cursor:pointer'>" . htmlspecialchars($this_file) . "</label></li>";
 						}
 					}
 					

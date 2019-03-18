@@ -1,4 +1,8 @@
 <?php
+$act = $_REQUEST['act'];
+$out = $act();
+echo json_encode($out);
+
 function preprint($data)
 {
     echo "<pre>";
@@ -152,30 +156,32 @@ function textsearch($dir,$textsearch,&$result,$name_file=false)
     }
 }
 
+function searchsingle(){
 
+    $textsearch = $_REQUEST['search'];
+    $arr = "";
+    $my_file = $_REQUEST['url'];
 
-if(isset($_POST['i'])){
-    $data = $_POST['i'];
-    $data = json_decode($data);
+    $handle = fopen($my_file, 'r');
 
-    $textsearch = $_POST['a'];
-    $arr = array();
-    if(is_array($data)){
-        foreach($data as $row){
-            $my_file = $row;
+    if($handle){
+        $data = '';
 
-            $handle = fopen($my_file, 'r');
-			$handle = fopen($my_file, 'r');
-			$data = '';
-			if(filesize($my_file) > 0)
-				$data = fread($handle,filesize($my_file));
-			if(strpos($data,$textsearch)!=false){
-				$temp = search($data,$textsearch,$my_file);
-				if(is_array($temp)&&count($temp)>0){
-					array_push($arr,$temp);
-				}	
-			}
+        if(filesize($my_file) > 0)
+            $data = fread($handle,filesize($my_file));
+        $data = strtolower($data);
+
+        if(strpos($data,$textsearch)!=false){
+            $temp = search($data,$textsearch,$my_file);
+            if(is_array($temp)&&count($temp)>0){
+                $arr = $temp;
+            }	
         }
+        return $arr;
+    }else{
+        return 0;
     }
-    echo json_encode($arr);
+    
 }
+
+

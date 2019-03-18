@@ -1,0 +1,134 @@
+class LoadingO{
+    constructor (text){
+        this.style = "<this.style id='loadinganimationO'>";
+        this.style += ".sk-circle {";
+        this.style += "margin: 50vh auto;";
+        this.style += "width: 40px;";
+        this.style += "height: 40px;";
+        this.style += "position: relative;";
+        this.style += "}";
+        this.style += ".sk-circle .sk-child {";
+        this.style += "width: 100%;";
+        this.style += "height: 100%;";
+        this.style += "position: absolute;";
+        this.style += "left: 0;";
+        this.style += "top: 0;";
+        this.style += "}";
+        this.style += ".sk-circle .sk-child:before {";
+        this.style += "content: '';";
+        this.style += "display: block;";
+        this.style += "margin: 0 auto;";
+        this.style += "width: 15%;";
+        this.style += "height: 15%;";
+        this.style += "background-color: #2ba3ff;";
+        this.style += "border-radius: 100%;";
+        this.style += "-webkit-animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;";
+        this.style += "animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;";
+        this.style += "}";
+        this.style += ".sk-circle .sk-circle2 {";
+        this.style += "-webkit-transform: rotate(30deg);";
+        this.style += "-ms-transform: rotate(30deg);";
+        this.style += "transform: rotate(30deg); }";
+        this.style += ".sk-circle .sk-circle3 {";
+        this.style += "-webkit-transform: rotate(60deg);";
+        this.style += "-ms-transform: rotate(60deg);";
+        this.style += "transform: rotate(60deg); }";
+        this.style += ".sk-circle .sk-circle4 {";
+        this.style += "-webkit-transform: rotate(90deg);";
+        this.style += "-ms-transform: rotate(90deg);";
+        this.style += "transform: rotate(90deg); }";
+        this.style += ".sk-circle .sk-circle5 {";
+        this.style += "-webkit-transform: rotate(120deg);";
+        this.style += "-ms-transform: rotate(120deg);";
+        this.style += "transform: rotate(120deg); }";
+        this.style += ".sk-circle .sk-circle6 {";
+        this.style += "-webkit-transform: rotate(150deg);";
+        this.style += "-ms-transform: rotate(150deg);";
+        this.style += "transform: rotate(150deg); }";
+        this.style += ".sk-circle .sk-circle7 {";
+        this.style += "-webkit-transform: rotate(180deg);";
+        this.style += "-ms-transform: rotate(180deg);";
+        this.style += "transform: rotate(180deg); }";
+        this.style += ".sk-circle .sk-circle8 {";
+        this.style += "-webkit-transform: rotate(210deg);";
+        this.style += "-ms-transform: rotate(210deg);";
+        this.style += "transform: rotate(210deg); }";
+        this.style += ".sk-circle .sk-circle9 {";
+        this.style += "-webkit-transform: rotate(240deg);";
+        this.style += "-ms-transform: rotate(240deg);";
+        this.style += "transform: rotate(240deg); }";
+        this.style += ".sk-circle .sk-circle10 {";
+        this.style += "-webkit-transform: rotate(270deg);";
+        this.style += "-ms-transform: rotate(270deg);";
+        this.style += "transform: rotate(270deg); }";
+        this.style += ".sk-circle .sk-circle11 {";
+        this.style += "-webkit-transform: rotate(300deg);";
+        this.style += "-ms-transform: rotate(300deg);";
+        this.style += "transform: rotate(300deg); }";
+        this.style += ".sk-circle .sk-circle12 {";
+        this.style += "-webkit-transform: rotate(330deg);";
+        this.style += "-ms-transform: rotate(330deg);";
+        this.style += "transform: rotate(330deg); }";
+        this.style += ".sk-circle .sk-circle2:before {";
+        this.style += "-webkit-animation-delay: -1.1s;";
+        this.style += "animation-delay: -1.1s; }";
+        this.style += ".sk-circle .sk-circle3:before {";
+        this.style += "-webkit-animation-delay: -1s;";
+        this.style += "animation-delay: -1s; }";
+        this.style += ".sk-circle .sk-circle4:before {";
+        this.style += "-webkit-animation-delay: -0.9s;";
+        this.style += "animation-delay: -0.9s; }";
+        this.style += ".sk-circle .sk-circle5:before {";
+        this.style += "-webkit-animation-delay: -0.8s;";
+        this.style += "animation-delay: -0.8s; }";
+        this.style += ".sk-circle .sk-circle6:before {";
+        this.style += "-webkit-animation-delay: -0.7s;";
+        this.style += "animation-delay: -0.7s; }";
+        this.style += ".sk-circle .sk-circle7:before {";
+        this.style += "-webkit-animation-delay: -0.6s;";
+        this.style += "animation-delay: -0.6s; }";
+        this.style += ".sk-circle .sk-circle8:before {";
+        this.style += "-webkit-animation-delay: -0.5s;";
+        this.style += "animation-delay: -0.5s; }";
+        this.style += ".sk-circle .sk-circle9:before {";
+        this.style += "-webkit-animation-delay: -0.4s;";
+        this.style += "animation-delay: -0.4s; }";
+        this.style += ".sk-circle .sk-circle10:before {";
+        this.style += "-webkit-animation-delay: -0.3s;";
+        this.style += "animation-delay: -0.3s; }";
+        this.style += ".sk-circle .sk-circle11:before {";
+        this.style += "-webkit-animation-delay: -0.2s;";
+        this.style += "animation-delay: -0.2s; }";
+        this.style += ".sk-circle .sk-circle12:before {";
+        this.style += "-webkit-animation-delay: -0.1s;";
+        this.style += "animation-delay: -0.1s; }";
+        this.style += "@-webkit-keyframes sk-circleBounceDelay {";
+        this.style += "0%, 80%, 100% {";
+        this.style += "    -webkit-transform: scale(0);";
+        this.style += "    transform: scale(0);";
+        this.style += "} 40% {";
+        this.style += "      -webkit-transform: scale(1);";
+        this.style += "      transform: scale(1);";
+        this.style += "  }";
+        this.style += "}";
+        this.style += "@keyframes sk-circleBounceDelay {";
+        this.style += "0%, 80%, 100% {";
+        this.style += "    -webkit-transform: scale(0);";
+        this.style += "    transform: scale(0);";
+        this.style += "} 40% {";
+        this.style += "      -webkit-transform: scale(1);";
+        this.style += "      transform: scale(1);";
+        this.style += "  }";
+        this.style += "}";
+        this.style += "</this.style>";
+        
+        console.log(typeof(text));
+        // if(typeof(text)=="string")
+    }
+
+    addLoading(){
+
+    }
+
+
+}
