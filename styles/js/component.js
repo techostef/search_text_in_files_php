@@ -35,14 +35,18 @@ jQuery(document).ready(function($){
         var bg = $("body").css("background");
         var color = $("body").css("color");
         var path = $(this).attr("data-text");
+        var cancel = "<button class='btn btn-danger' style='float:right' id='cancelEditor' type='button'>Cancel</button>";
+        var save = "<button class='btn btn-primary' style='float:right;margin-right:10px;' id='saveEditor' type='button'>Save</button>";
         var inputpath = "<input id='pathEditor' type='hidden' name='path'/>";
         var inputsave = "<input type='hidden' name='save' value='1'/>";
         var inputcolor = "<input type='hidden' name='color' value='"+color+"'/>";
         var inputbg = "<input type='hidden' name='bg' value='"+bg+"'/>";
         var alertmessage = "<label class='alert alert-info' id='alertmessage' style='display:none;position: absolute;right: 50px;top: 30px;'></label>";
         var textarea = "<textarea id='textareaEditor' name='text' spellcheck='false' style='width:100%;height:100vh;color:"+color+";background:"+bg+"'></textarea>";
-        var container = "<div id='containerTextEditor'  style='width:100%;height:100%;padding:20px;color:"+color+";background:"+bg+";position:fixed;z-index:1'>";
         var form = "<form id='formEditor' action='saveFile.php' method='POST'>";
+        var container = "<div id='containerTextEditor' style='width:100%;height:100%;padding:20px;color:"+color+";background:"+bg+";position:fixed;z-index:1'>";
+        container += cancel;
+        container += save;
         container += alertmessage;
         container += form;
         container += inputpath;
@@ -90,14 +94,40 @@ jQuery(document).ready(function($){
         var re = new RegExp('(\n)', "g");
         return (this.value.substring(this.selectionStart, this.selectionEnd).match(re)||[]).length > 0 ? true : false;
     };
+
+    // button cancel
+    $("body").on("click","#cancelEditor",function(){
+        $("#containerTextEditor").remove();
+
+    })
+    // button save
+    $("body").on("click","#saveEditor",function(){
+        var frm = $("#formEditor");
+        $.ajax({
+            type: frm.attr('method'),
+            url: frm.attr('action'),
+            data: frm.serialize(),
+            success: function (data) {
+                showalert("Saved");
+            },
+            error: function (data) {
+                showalert("Cant Saved");
+            },
+        });
+
+    })
+
+    function showalert(info){
+        $("#alertmessage").text(info).show();
+        setTimeout(function(){
+            $("#alertmessage").hide();
+        },1000);
+    }
+    
     $("body").on("keydown","#textareaEditor",function(e){
-        function showalert(info){
-            $("#alertmessage").text(info).show();
-            setTimeout(function(){
-                $("#alertmessage").hide();
-            },1000);
-        }
         
+        
+        // start save file
 		if (e.ctrlKey && e.which == 83 ) {
             e.preventDefault();
 
@@ -114,13 +144,19 @@ jQuery(document).ready(function($){
                 },
             });
         }
+        // end save file
+
         // if (e.ctrlKey && e.altKey && e.which == 87 ) {
         //     $("#containerTextEditor").remove();
         // }
+
+        // start cancel file or close file if not change
         if (e.ctrlKey && e.altKey && e.which == 87 ) {
             e.preventDefault();
             $("#containerTextEditor").remove();
         }
+        // end start cancel file or close file if not change
+
 
         if(e.which == 9 && e.shiftKey){
             e.preventDefault();

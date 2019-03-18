@@ -47,7 +47,12 @@ session_start();
 		<!-- Makes the file tree(s) expand/collapsae dynamically -->
 		<script src="jquery.js" type="text/javascript"></script>
 		<script src="styles/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+
+		<!-- start editor text for php or html -->
 		<script src="styles/js/component.js" type="text/javascript"></script>
+		<!-- end editor text for php or html -->
+
+
 		<script src="php_file_tree_jquery.js" type="text/javascript"></script>
 		<script src="loadingO.js" type="text/javascript"></script>
 		<!-- <script src="loadingO-v.0.3.js" type="text/javascript"></script> -->
@@ -105,7 +110,6 @@ session_start();
 								<div class="form-group">
 									<div class="col-md-12">
 										<button id="searchNamebutton" style="display:block;margin:auto" name="singlebutton" class="btn btn-primary">Search</button>
-										
 									</div>
 								</div>
 							</div>
@@ -232,6 +236,7 @@ session_start();
 			var loadingN=1;
 			var loadingChar,nama;
 			var temp,a,i,arr,arrLength,textsearch;
+			// start looping folder using recursive
 			function loopcheck(select,checked,index,max){
 				if(index>=max){
 					removeLoading();
@@ -250,6 +255,9 @@ session_start();
 					})
 				}, 200);
 			}
+			// end looping folder using recursive
+
+			// start change title page
 			function changeTitle(){
 				if(loading){
 					loadingvar = setInterval(function(){
@@ -263,18 +271,31 @@ session_start();
 					},500);
 				}
 			}
+			// end change title page
+
+			// start make Default title page
 			function removeChangeTitle(){
 				loadingvar = null;
 				$("#Title").text("Done");
 			}
+			// end make Default title page
+
+
+			// searching file and give loading for inform user about how much item search
+			// start searching file and give loading
 			function searchlooping(arr,index,length){
 				var item = arr[index];
+				// if array or item is variable or not undefined
 				if(item){
+
 					var persen = parseFloat(index/length)*100;
+
+					// add loading or rewrite data on loading for inform user
 					if(index==0||index%5==0){
 						addLoading(index+"/"+arr.length+" ("+persen+"%)");
-
 					}
+
+					// send url page and system will search text in page or not
 					$.ajax({
 						type:"POST",
 						data:{url:item,search:textsearch},
@@ -282,6 +303,8 @@ session_start();
 						success:function(data){
 							data = JSON.parse(data);
 							content = '';
+							// if find it will append on html 
+							// start append data
 							if(data!=0&&data.length>0){
 								data = data[0];
 								nama = data['File'];
@@ -295,12 +318,17 @@ session_start();
 								content+="</div><hr/>";
 								document.querySelector(".resultSearch").innerHTML += content;
 							}
+							// end append data
+
 							if(index==length-1){
 								removeLoading();
 							}
 						}
 					}).done(function(){
+						// after get respon, it will search for another file
 						searchlooping(arr,index+1);
+
+						// if index equal max remove loading
 						if(index==length-1){
 							removeLoading();
 						}
@@ -311,6 +339,11 @@ session_start();
 				}
 				
 			}
+			// end searching file and give loading
+
+
+			// search text in file,searching using api if find then append in html, check file 1 per 1
+			// start searching text in file
 			function searchText(){
 				loading=true;
 				changeTitle();
@@ -331,6 +364,9 @@ session_start();
 				arrLength = arr.length;
 				searchlooping(arr,0,arr.length);
 			}
+			// end searching text in file
+
+
 			select.click(function(e){
 				temp = $(this).attr('data-type');
 				a = $(this).prop('checked');
