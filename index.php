@@ -59,7 +59,7 @@ session_start();
 	</head>
 
 	<body>
-		<div class="container">
+		<div class="container-fluid">
 			<div class="row">
 			<div class="form-horizontal">
 				<fieldset>
@@ -94,9 +94,15 @@ session_start();
 									</div>
 								</div>
 								<div class="form-group">
+									<label class="col-md-2 control-label" for="textinputext" style="color:black !important">Text Search Extsion</label>  
+									<div class="col-md-8">
+										<input id="textsearchext" value="*" name="textinputext" type="text" placeholder="Text Search" class="form-control input-md">
+										<label class="col-md-12 control-label" for="textinputext" style="color:black !important">For multi extension using ",". Example js,php</label>  
+									</div>
+								</div>
+								<div class="form-group">
 									<div class="col-md-12">
 										<button id="searchbutton" style="display:block;margin:auto" name="singlebutton" class="btn btn-primary">Search</button>
-										
 									</div>
 								</div>
 							</div>
@@ -124,11 +130,17 @@ session_start();
 
 			</div>
 		</div>
-		<div class="container">
+		<div class="container-fluid">
 			<div class="row">
 				<div class="col-md-6">
+					
 					<h2>Result...</h2>
-					<div class="resultSearch" style="width:100%"></div>
+					<div class="form-group">
+						<div class="col-md-12">
+							<input id="searchResult" value="" name="textinput" type="text" placeholder="Text Search" class="form-control input-md">
+						</div>
+					</div>
+					<div class="resultSearch" style="width:100%;margin-top:60px;"></div>
 				</div>
 				<div class="col-md-6">
 					<h2>Browing... <button id="changeLinks" name="singlebutton" onclick="myFunction()" class="btn btn-primary changeLinks">Ganti Links</button></h2>
@@ -229,7 +241,9 @@ session_start();
 		<script>
 			var select = $(".targetSearch");
 			var text = $("#textsearch");
+			var textExt = $("#textsearchext");
 			var searchbutton = $("#searchbutton");
+			var searchResult = $("#searchResult");
 			var content;
 			var loadingVar;
 			var loading=false;
@@ -289,9 +303,9 @@ session_start();
 				if(item){
 
 					var persen = parseFloat(index/length)*100;
-
+					persen = persen.toFixed(2);
 					// add loading or rewrite data on loading for inform user
-					if(index==0||index%5==0){
+					if(index==0||index%10==0){
 						addLoading(index+"/"+arr.length+" ("+persen+"%)");
 					}
 
@@ -301,32 +315,47 @@ session_start();
 						data:{url:item,search:textsearch},
 						url:"searchapi.php?act=searchsingle",
 						success:function(data){
-							data = JSON.parse(data);
-							content = '';
-							// if find it will append on html 
-							// start append data
-							if(data!=0&&data.length>0){
-								data = data[0];
-								nama = data['File'];
-								nama = nama.split('/');
-								nama = nama[nama.length-1];
-								
-								content+=nama;
-								content+="<div class='col-md-12'>";
-								temp = "Url:"+data['File']+",Line:"+data['Line'];
-								content+=temp;
-								content+="</div><hr/>";
-								document.querySelector(".resultSearch").innerHTML += content;
-							}
-							// end append data
+							try{
+								data = JSON.parse(data);
+								// if find it will append on html 
+								// start append data
+								if(data!=0&&data.length>0){
+									temp = "";
+									data.forEach(function(item,i){
+										if(i==0){
+											content = '';
+											nama = item['File'];
+											nama = nama.split('/');
+											nama = nama[nama.length-1];
+											
+											content+="<div style='margin-bottom:10px;' class='col-md-12 openTextEditor' data-text=\""+item['File']+"\">";
+											content+="<div style='display:block;width:100%;border-bottom:1px solid #41a99f'>"+nama+"</div>";
+											content+= "Url:"+item['File']+",Count:"+data.length+"<br>";
+											content+="{{temp}}";
+											content+="</div>";
+										}
+										temp += "<span style='display:inline-block'>Line:"+item['Line'];
+										if(i!=data.length-1)temp += ",";
+										temp += "</span>";
+									})
+									if(temp!=""){
+										content = content.replace("{{temp}}",temp);
+									}
+									document.querySelector(".resultSearch").innerHTML += content;
+								}
+								// end append data
 
-							if(index==length-1){
+								if(index==length-1){
+									removeLoading();
+								}
+							}catch(err){
 								removeLoading();
+								// searchlooping(arr,index+1,length);
 							}
 						}
 					}).done(function(){
 						// after get respon, it will search for another file
-						searchlooping(arr,index+1);
+						searchlooping(arr,index+1,length);
 
 						// if index equal max remove loading
 						if(index==length-1){
@@ -349,16 +378,35 @@ session_start();
 				changeTitle();
 				arr = [];
 				document.querySelector(".resultSearch").innerHTML = "";
-				textsearch = text.val();
+				textsearch = text.val().toLowerCase();
+				textsearchext = textExt.val();
+				var ext = "";
+				var value = "";
+				if(textsearchext.indexOf(",")>=0){
+					textsearchext = textsearchext.split(",");
+				}
 				if(textsearch==""){
 					alert("Isi Search..");
 					return false;
 				}
 				select.each(function(){
 					if($(this).prop('checked')){
-						if($(this).attr('data-type')=='file'){
-							arr.push($(this).attr('data-url'));
+						if($(this).attr('data-type')){
+							if($(this).attr('data-type')=='file'){
+								value = $(this).attr('data-text')?$(this).attr('data-text'):"";
+								value = $(this).attr('data-url')?$(this).attr('data-url'):value;
+								ext = value.split(".");
+								ext = ext[ext.length-1];
+								if(textsearchext=="*"){
+									arr.push($(this).attr('data-url'));
+								}else if(typeof(textsearchext)=="string"&&ext==textsearchext){
+									arr.push($(this).attr('data-url'));
+								}else if(typeof(textsearchext)=="array"&&textsearchext.indexOf(ext)>=0){
+									arr.push($(this).attr('data-url'));
+								}
+							}
 						}
+						
 					}
 				})
 				arrLength = arr.length;
@@ -374,8 +422,29 @@ session_start();
 				var inputs = $(this).parent().find("input");
 				if(temp=='dir'){
 					loopcheck($(this),a,0,inputs.length-1);
+				}else{
+					removeLoading();
 				}
 			})
+
+			searchResult.keyup(function(){
+				var val = $(this).val();
+				var temp = "";
+				$(".resultSearch").find("div").each(function(){
+					if(val==""){
+						$(this).show();
+						return;
+					}
+					temp = $(this).text();
+					if(temp.indexOf(val)>=0){
+						$(this).show();
+					}else{
+						$(this).hide();
+					}
+				})
+			})
+			
+			// ketika ketik enter akan memangil fungsi search
 			text.keyup(function(e){
 				if(e.which==13){
 					searchText();

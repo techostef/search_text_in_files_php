@@ -34,7 +34,8 @@ jQuery(document).ready(function($){
         var url = window.location.protocol+"//"+window.location.hostname+window.location.pathname;
         var bg = $("body").css("background");
         var color = $("body").css("color");
-        var path = $(this).attr("data-text");
+        var path = $(this).attr("data-text")?$(this).attr("data-text"):"";
+        path = $(this).attr("data-url")?$(this).attr("data-url"):path;
         var cancel = "<button class='btn btn-danger' style='float:right' id='cancelEditor' type='button'>Cancel</button>";
         var save = "<button class='btn btn-primary' style='float:right;margin-right:10px;' id='saveEditor' type='button'>Save</button>";
         var inputpath = "<input id='pathEditor' type='hidden' name='path'/>";

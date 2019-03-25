@@ -169,6 +169,7 @@ function searchsingle(){
 
         if(filesize($my_file) > 0)
             $data = fread($handle,filesize($my_file));
+            
         $data = strtolower($data);
 
         if(strpos($data,$textsearch)!=false){

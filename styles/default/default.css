@@ -117,6 +117,9 @@ ul>li{
 	/* You can add millions of these... */
 
 /* USER PROFILE PAGE */
+.openTextEditor{
+    cursor: pointer;
+}
 .listStyle-none li{
 	list-style: none;
 }
