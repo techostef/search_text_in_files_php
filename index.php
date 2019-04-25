@@ -94,10 +94,28 @@ session_start();
 									</div>
 								</div>
 								<div class="form-group">
+									<label class="col-md-2 control-label" style="color:black !important;padding-top:0">Exact</label>  
+									<div class="col-md-8">
+										<input type="checkbox" class="form-control exactSearch" style="max-width:15px;max-height:15px">
+									</div>
+								</div>
+								<div class="form-group">
 									<label class="col-md-2 control-label" for="textinputext" style="color:black !important">Text Search Extsion</label>  
 									<div class="col-md-8">
 										<input id="textsearchext" value="*" name="textinputext" type="text" placeholder="Text Search" class="form-control input-md">
 										<label class="col-md-12 control-label" for="textinputext" style="color:black !important">For multi extension using ",". Example js,php</label>  
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label" for="textinputext" style="color:black !important;padding-top:0">Replace all</label>  
+									<div class="col-md-8">
+										<input type="checkbox" class="form-control check-replaceAll" style="max-width:15px;max-height:15px">
+									</div>
+								</div>
+								<div class="form-group container-replace-with" style="display:none">
+									<label class="col-md-2 control-label" for="textinput" style="color:black !important">Text Search</label>  
+									<div class="col-md-8">
+										<input id="textsearch-replace-with" value="" type="text" placeholder="Text Replace" class="form-control input-md">
 									</div>
 								</div>
 								<div class="form-group">
@@ -239,6 +257,10 @@ session_start();
 		});
 		</script>
 		<script>
+			var checkReplaceAll = $(".check-replaceAll");
+			var exactSearch = $(".exactSearch");
+			var containerReplaceWith = $(".container-replace-with");
+			var textReplaceWith = $("#textsearch-replace-with");
 			var select = $(".targetSearch");
 			var text = $("#textsearch");
 			var textExt = $("#textsearchext");
@@ -298,6 +320,7 @@ session_start();
 			// searching file and give loading for inform user about how much item search
 			// start searching file and give loading
 			function searchlooping(arr,index,length){
+				console.log('text', textReplaceWith.val());
 				var item = arr[index];
 				// if array or item is variable or not undefined
 				if(item){
@@ -309,20 +332,27 @@ session_start();
 						addLoading(index+"/"+arr.length+" ("+persen+"%)");
 					}
 
+					
 					// send url page and system will search text in page or not
 					$.ajax({
 						type:"POST",
-						data:{url:item,search:textsearch},
+						data:{
+							'url': item,
+							'search': textsearch,
+							'checkreplace': JSON.stringify (checkReplaceAll.prop("checked")) ,
+							'textreplacewith': textReplaceWith.val(),
+							'exactsearch': JSON.stringify (exactSearch.prop("checked"))
+						},
 						url:"searchapi.php?act=searchsingle",
 						success:function(data){
 							try{
 								data = JSON.parse(data);
 								// if find it will append on html 
 								// start append data
-								if(data!=0&&data.length>0){
+								if (data!=0 && data.length>0) {
 									temp = "";
-									data.forEach(function(item,i){
-										if(i==0){
+									data.forEach(function(item, i) {
+										if(i == 0){
 											content = '';
 											nama = item['File'];
 											nama = nama.split('/');
@@ -338,7 +368,7 @@ session_start();
 										if(i!=data.length-1)temp += ",";
 										temp += "</span>";
 									})
-									if(temp!=""){
+									if(temp != ""){
 										content = content.replace("{{temp}}",temp);
 									}
 									document.querySelector(".resultSearch").innerHTML += content;
@@ -374,6 +404,11 @@ session_start();
 			// search text in file,searching using api if find then append in html, check file 1 per 1
 			// start searching text in file
 			function searchText(){
+				if (checkReplaceAll.prop("checked") == true) {
+					if (!confirm("Anda yakin ingin mengganti teks semua ?")) {
+						return false
+					}
+				}
 				loading=true;
 				changeTitle();
 				arr = [];
@@ -382,21 +417,24 @@ session_start();
 				textsearchext = textExt.val();
 				var ext = "";
 				var value = "";
-				if(textsearchext.indexOf(",")>=0){
+
+				if (textsearchext.indexOf(",")>=0) {
 					textsearchext = textsearchext.split(",");
 				}
-				if(textsearch==""){
+
+				if (textsearch=="") {
 					alert("Isi Search..");
 					return false;
 				}
-				select.each(function(){
-					if($(this).prop('checked')){
-						if($(this).attr('data-type')){
-							if($(this).attr('data-type')=='file'){
-								value = $(this).attr('data-text')?$(this).attr('data-text'):"";
-								value = $(this).attr('data-url')?$(this).attr('data-url'):value;
-								ext = value.split(".");
-								ext = ext[ext.length-1];
+
+				select.each(function() {
+					if ($(this).prop('checked')) {
+						if ($(this).attr('data-type')) {
+							if ($(this).attr('data-type') == 'file') {
+								value = $(this).attr('data-text') ? $(this).attr('data-text') : "" ;
+								value = $(this).attr('data-url') ? $(this).attr('data-url') : value ;
+								ext = value.split(".") ;
+								ext = ext[ext.length-1] ;
 								if(textsearchext=="*"){
 									arr.push($(this).attr('data-url'));
 								}else if(typeof(textsearchext)=="string"&&ext==textsearchext){
@@ -415,6 +453,14 @@ session_start();
 			// end searching text in file
 
 
+			checkReplaceAll.click(function(e) {
+				if ($(this).prop("checked") === true) {
+					containerReplaceWith.show();
+				}else{
+					containerReplaceWith.hide();
+				}
+			})
+			
 			select.click(function(e){
 				temp = $(this).attr('data-type');
 				a = $(this).prop('checked');

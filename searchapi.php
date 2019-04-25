@@ -156,30 +156,40 @@ function textsearch($dir,$textsearch,&$result,$name_file=false)
     }
 }
 
-function searchsingle(){
+function searchsingle() {
 
-    $textsearch = $_REQUEST['search'];
+    $textsearch = $_REQUEST['search'] ;
     $arr = "";
-    $my_file = $_REQUEST['url'];
+    $my_file = $_REQUEST['url'] ;
+    $checkreplace = $_REQUEST['checkreplace'] ;
+    $textreplacewith = $_REQUEST['textreplacewith'] ;
+    $exactsearch = $_REQUEST['exactsearch'] ;
+    $handle = fopen($my_file, 'r') ;
 
-    $handle = fopen($my_file, 'r');
-
-    if($handle){
+    if ($handle) {
         $data = '';
 
-        if(filesize($my_file) > 0)
-            $data = fread($handle,filesize($my_file));
-            
-        $data = strtolower($data);
+        if (filesize($my_file) > 0)
+            $data = fread($handle,filesize($my_file)) ;
+        
 
-        if(strpos($data,$textsearch)!=false){
-            $temp = search($data,$textsearch,$my_file);
-            if(is_array($temp)&&count($temp)>0){
+        if ($exactsearch != 'true') {
+            $data = strtolower($data);
+        }
+
+
+        if (strpos($data,$textsearch)!=false) {
+            $temp = search ($data,$textsearch,$my_file) ;
+            if (is_array($temp) && count($temp)>0) {
                 $arr = $temp;
-            }	
+            }
+            if ($checkreplace == 'true') {
+                $data = str_replace ($textsearch,$textreplacewith,$data) ;
+                file_put_contents ($my_file, $data) ;
+            }
         }
         return $arr;
-    }else{
+    } else {
         return 0;
     }
     
