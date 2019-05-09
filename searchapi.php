@@ -173,19 +173,29 @@ function searchsingle() {
             $data = fread($handle,filesize($my_file)) ;
         
 
+        
+        $data_search = $data;
         if ($exactsearch != 'true') {
-            $data = strtolower($data);
+            $data_search = strtolower($data);
         }
-
-
-        if (strpos($data,$textsearch)!=false) {
-            $temp = search ($data,$textsearch,$my_file) ;
+        if (strpos($data_search,$textsearch)!=false) {
+            if ($exactsearch != 'true') {
+                $temp = search (strtolower($data),$textsearch,$my_file) ;
+            } else {
+                $temp = search ($data,$textsearch,$my_file) ;
+            }
             if (is_array($temp) && count($temp)>0) {
                 $arr = $temp;
             }
             if ($checkreplace == 'true') {
-                $data = str_replace ($textsearch,$textreplacewith,$data) ;
-                file_put_contents ($my_file, $data) ;
+                if ($exactsearch != 'true') {
+                    $data = str_ireplace ($textsearch,$textreplacewith,$data) ;
+                    file_put_contents ($my_file, $data) ;
+                } else {
+                    $data = str_replace ($textsearch,$textreplacewith,$data) ;
+                    file_put_contents ($my_file, $data) ;
+                }
+                
             }
         }
         return $arr;
